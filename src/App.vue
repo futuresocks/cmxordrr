@@ -1,28 +1,51 @@
-<template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+
+<template lang="html">
+  <div>
+    <input type="text" v-model="postcode"/>
+    <button @click="getCoords">Find your nearest comic shop</button>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import LocationHelper from './models/LocationHelper'
 
 export default {
-  name: 'app',
-  components: {
-    HelloWorld
+  data(){
+    return {
+      coords: null,
+      country: "",
+      postcode: "",
+      shops: [
+        {
+          name: "Forbidden Planet Glasgow",
+          coords: {lat: 55.8624636, lng: -4.255389},
+          email: "sales@forbiddenplanet.co.uk"
+        },
+        {
+          name: "Forbidden Planet London",
+          coords: {lat: 51.5151226, lng:-0.1295157},
+          email: null,
+          webform: "https://forbiddenplanet.com/contact/form/"
+        }
+      ],
+      nearestShop: null
+    }
+  },
+  methods: {
+    getCoords(){
+      fetch(`https://api.postcodes.io/postcodes/${this.postcode}`)
+      .then(res => res.json())
+      .then(data => {
+        this.country = data.result.country;
+        this.coords = {lat: data.result.latitude, lng: data.result.longitude}})
+      .then(() => {
+        const locator = new LocationHelper(this.coords, this.shops);
+        this.nearestShop = locator.findNearest();
+      })
+      }
+    }
   }
-}
-</script>
+  </script>
 
-<style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
+  <style lang="css" scoped>
+  </style>
