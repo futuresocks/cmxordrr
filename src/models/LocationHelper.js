@@ -15,4 +15,4 @@ LocationHelper.prototype.findNearest = function(){
 };
 
 
-module.exports = LocationHelper;
+if(typeof module != 'undefined'){ module.exports = LocationHelper}
