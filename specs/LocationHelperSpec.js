@@ -3,7 +3,7 @@ const LocationHelper = require('../src/models/LocationHelper');
 
 describe('Location Helper', () => {
 
-  let central, queenStreet, falkirkHigh, edinburghWav;
+  let central, queenStreet, falkirkHigh, edinburghWav, london;
 
   beforeEach(() => {
     central = {location: "Glasgow Central", coords: {lat: 55.8591118, lng: -4.2602975}};
@@ -14,11 +14,17 @@ describe('Location Helper', () => {
 
   it('should calculate distance estimates', () => {
     const locator = new LocationHelper(central.coords);
-    assert.strictEqual(locator.distanceEstimate(queenStreet.coords), 3614.735891467791);
+    assert.strictEqual(locator.distanceEstimate(queenStreet.coords), 0.00005942213337998502);
   })
 
   it('should return the closest location', () => {
     const locations = [falkirkHigh, edinburghWav];
+    const locator = new LocationHelper(queenStreet.coords, locations);
+    assert.deepStrictEqual(locator.findNearest(), falkirkHigh);
+  })
+
+  it('should return the closest location regardless of location position in array', () => {
+    const locations = [edinburghWav, falkirkHigh];
     const locator = new LocationHelper(queenStreet.coords, locations);
     assert.deepStrictEqual(locator.findNearest(), falkirkHigh);
   })

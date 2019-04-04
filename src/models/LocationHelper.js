@@ -1,18 +1,25 @@
-const LocationHelper = function(startCoords, locations){
+export const LocationHelper = function(startCoords, locations){
   this.startCoords = startCoords;
   this.locations = locations;
 }
 
 LocationHelper.prototype.distanceEstimate = function(locationCoords){
-  return Math.pow(this.startCoords.lat - locationCoords.lat, 2) + Math.pow(this.startCoords.lng - locationCoords.lat, 2);
+  return Math.pow(this.startCoords.lat - locationCoords.lat, 2) + Math.pow(this.startCoords.lng - locationCoords.lng, 2);
 }
 
 LocationHelper.prototype.findNearest = function(){
-  return this.locations.reduce((min, location) => {
-    if(this.distanceEstimate(location.coords) < min.distance) min.location = location;
-    return min;
-  }, {location: this.locations[0], distance: this.distanceEstimate(this.locations[0].coords)}.location);
+  return this.locations.map(location => {
+    location.distance = this.distanceEstimate(location.coords)
+    return location;
+  }).sort((locationA, locationB) => locationA.distance - locationB.distance)[0];
+
+  // const locationsWithDistances = this.locations.map(location => {
+  //   location.distance = this.distanceEstimate(location.coords)
+  //   return location;
+  // })
+  // const sortedLocations = locationsWithDistances.sort((locationA, locationB) => {
+  //   locationA.distance - locationB.distance
+  // });
+  // const nearest = sortedLocations[0];
+  // return nearest;
 };
-
-
-if(typeof module != 'undefined'){ module.exports = LocationHelper}

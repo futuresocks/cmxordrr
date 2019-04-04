@@ -3,11 +3,12 @@
   <div>
     <input type="text" v-model="postcode"/>
     <button @click="getCoords">Find your nearest comic shop</button>
+    <p v-if="nearestShop">Your nearest comic shop is {{nearestShop.name}}</p>
   </div>
 </template>
 
 <script>
-import LocationHelper from './models/LocationHelper'
+import { LocationHelper } from './models/LocationHelper';
 
 export default {
   data(){
